@@ -1,0 +1,15 @@
+galaxy_info:
+  author: Jean-Charles Legras
+  description: |
+    This Ansible role allow people to enable the docker remapping feature:
+    https://integratedcode.us/2015/10/13/user-namespaces-have-arrived-in-docker/
+  license: MIT
+  min_ansible_version: 1.4
+  platforms:
+    - name: Ubuntu
+  galaxy_tags:
+    - docker
+    - docker remap
+    - dockremap
+    - user namespace
+dependencies: []

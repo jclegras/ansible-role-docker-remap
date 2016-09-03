@@ -1,0 +1,29 @@
+---
+dockremap_docker_options:
+  userns_remap: default
+  directory: /etc/docker
+
+dockremap_subordinate_file:
+  length: 65536
+  reference_user: dockremap
+  numerical_subordinate_id: 500000
+  group: /etc/subgid
+  user: /etc/subuid
+
+dockremap_groups:
+  dockremap:
+    name: dockremap
+    gid: 0
+  dockremap_user:
+    name: dockremap-user
+    gid: 1000
+
+dockremap_users:
+  dockremap:
+    name: dockremap
+    group: dockremap
+    uid: 0
+  dockremap_user:
+    name: dockremap-user
+    group: dockremap-user
+    uid: 1000
