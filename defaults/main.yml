@@ -1,29 +1,23 @@
 ---
-dockremap_docker_options:
-  userns_remap: default
-  directory: /etc/docker
+# Basic remapping options
+dockremap_docker_options_userns_remap: dockremap
+dockremap_docker_options_directory: /etc/docker
 
-dockremap_subordinate_file:
-  length: 65536
-  reference_user: dockremap
-  numerical_subordinate_id: 500000
-  group: /etc/subgid
-  user: /etc/subuid
+# Subordinates files configuration
+dockremap_subordinate_file_length: 65536
+dockremap_subordinate_file_reference_user: "{{ dockremap_docker_options_userns_remap }}"
+dockremap_subordinate_file_numerical_subordinate_id: 500000
+dockremap_subordinate_file_group: /etc/subgid
+dockremap_subordinate_file_user: /etc/subuid
 
+# Groups and users for mapping
 dockremap_groups:
-  dockremap:
-    name: dockremap
+  reference_user:
+    name: "{{ dockremap_docker_options_userns_remap }}"
     gid: 0
-  dockremap_user:
-    name: dockremap-user
-    gid: 1000
 
 dockremap_users:
-  dockremap:
-    name: dockremap
-    group: dockremap
+  reference_group:
+    name: "{{ dockremap_docker_options_userns_remap }}"
+    group: "{{ dockremap_docker_options_userns_remap }}"
     uid: 0
-  dockremap_user:
-    name: dockremap-user
-    group: dockremap-user
-    uid: 1000

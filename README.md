@@ -1,31 +1,111 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+This Ansible role allow people to enable the docker remapping feature: https://integratedcode.us/2015/10/13/user-namespaces-have-arrived-in-docker/
 
-Requirements
+Requirement
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+**Docker version 1.10** min installed on your system with an OS with user namespace enabled
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+    # Basic remapping options
+    dockremap_docker_options_userns_remap: dockremap
+    dockremap_docker_options_directory: /etc/docker
+    
+    # Subordinates files configuration
+    dockremap_subordinate_file_length: 65536
+    dockremap_subordinate_file_reference_user: "{{ dockremap_docker_options_userns_remap }}"
+    dockremap_subordinate_file_numerical_subordinate_id: 500000
+    dockremap_subordinate_file_group: /etc/subgid
+    dockremap_subordinate_file_user: /etc/subuid
+    
+    # Groups and users for mapping
+    dockremap_groups:
+      reference_user:
+        name: "{{ dockremap_docker_options_userns_remap }}"
+        gid: 0
+    
+    dockremap_users:
+      reference_group:
+        name: "{{ dockremap_docker_options_userns_remap }}"
+        group: "{{ dockremap_docker_options_userns_remap }}"
+        uid: 0
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None
 
 Example Playbook
 ----------------
+       
+1) Change the reference user (default dockremap)
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+    ---
+    hosts: all
+    become: true
+    vars:
+      dockremap_docker_options_userns_remap: myreference
+    roles:
+      - jclegras.docker-remap         
+      
+2) Change the numerical subordinate ID (default 500000)
 
-    - hosts: servers
+    ---
+    hosts: all
+    become: true
+    vars:
+      dockremap_subordinate_file_numerical_subordinate_id: 100000
+    roles:
+      - jclegras.docker-remap   
+      
+3) Add new users and groups for mapping
+
+    ---
+    - hosts: all
+      become: true
+      vars:
+        dockremap_groups:
+          dockremap_factory:
+            name: dockremap-jenkins
+            gid: 1000
+            
+        dockremap_users:
+          dockremap_factory:
+            name: dockremap-jenkins
+            group: dockremap-jenkins
+            uid: 1000
       roles:
-         - { role: username.rolename, x: 42 }
+        - jclegras.docker-remap
+         
+Note
+----
+
+*Let dockremap_subordinate_file_numerical_subordinate_id = 100000 and*
+*let dockremap_subordinate_file_length = 65536*
+
+Your mapping will be:
+
+      | User Host ID   |  User Container ID|
+      |----------------|:------------------|
+      | 100000         | 0                 |
+      | ...            | ...               |
+      | 101000         | 1000              |
+      | ...            | ...               |
+      | 165536         | 65536             |
+
+  
+**Rule:**
+
+*x in [0..dockremap_subordinate_file_length]*
+      
+    User Host ID = User Host ID + x
+    User Container ID = User Host ID - dockremap_subordinate_file_numerical_subordinate_id
+
+  
 
 License
 -------
@@ -35,4 +115,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Jean-Charles Legras

@@ -9,7 +9,7 @@ galaxy_info:
     - name: Ubuntu
   galaxy_tags:
     - docker
-    - docker remap
+    - docker_remap
     - dockremap
-    - user namespace
+    - user_namespace
 dependencies: []

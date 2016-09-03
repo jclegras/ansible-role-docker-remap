@@ -2,38 +2,38 @@
 - name: Create groups
   group:
     name: "{{ item.value.name }}"
-    gid: "{{ item.value.gid + dockremap_subordinate_file.numerical_subordinate_id }}"
+    gid: "{{ item.value.gid + dockremap_subordinate_file_numerical_subordinate_id }}"
     state: present
   with_dict: "{{ dockremap_groups }}"
 
 - name: Create users
   user:
    name: "{{ item.value.name }}"
-   uid: "{{ item.value.uid + dockremap_subordinate_file.numerical_subordinate_id }}"
+   uid: "{{ item.value.uid + dockremap_subordinate_file_numerical_subordinate_id }}"
    group: "{{ item.value.group }}"
    state: present
   with_dict: "{{ dockremap_users }}"
 
 - name: Set subordinate GID file
   lineinfile:
-    dest: "{{ dockremap_subordinate_file.group }}"
-    regexp: "^{{ dockremap_subordinate_file.reference_user }}:{{ dockremap_subordinate_file.numerical_subordinate_id }}:{{ dockremap_subordinate_file.length }}$"
-    line: "{{ dockremap_subordinate_file.reference_user }}:{{ dockremap_subordinate_file.numerical_subordinate_id }}:{{ dockremap_subordinate_file.length }}"
+    dest: "{{ dockremap_subordinate_file_group }}"
+    regexp: "^{{ dockremap_subordinate_file_reference_user }}:{{ dockremap_subordinate_file_numerical_subordinate_id }}:{{ dockremap_subordinate_file_length }}$"
+    line: "{{ dockremap_subordinate_file_reference_user }}:{{ dockremap_subordinate_file_numerical_subordinate_id }}:{{ dockremap_subordinate_file_length }}"
 
 - name: Set subordinate UID file
   lineinfile:
-    dest: "{{ dockremap_subordinate_file.user }}"
-    regexp: "^{{ dockremap_subordinate_file.reference_user }}:{{ dockremap_subordinate_file.numerical_subordinate_id }}:{{ dockremap_subordinate_file.length }}$"
-    line: "{{ dockremap_subordinate_file.reference_user }}:{{ dockremap_subordinate_file.numerical_subordinate_id }}:{{ dockremap_subordinate_file.length }}"
+    dest: "{{ dockremap_subordinate_file_user }}"
+    regexp: "^{{ dockremap_subordinate_file_reference_user }}:{{ dockremap_subordinate_file_numerical_subordinate_id }}:{{ dockremap_subordinate_file_length }}$"
+    line: "{{ dockremap_subordinate_file_reference_user }}:{{ dockremap_subordinate_file_numerical_subordinate_id }}:{{ dockremap_subordinate_file_length }}"
 
 - name: Docker options directory
   file:
-    path: "{{ dockremap_docker_options.directory }}"
+    path: "{{ dockremap_docker_options_directory }}"
     state: directory
     mode: 0700
 
 - name: Docker daemon options
   template:
     src: ./daemon.j2
-    dest: "{{ dockremap_docker_options.directory }}/daemon.json"
+    dest: "{{ dockremap_docker_options_directory }}/daemon.json"
   notify: Reload docker daemon
