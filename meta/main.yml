@@ -4,9 +4,11 @@ galaxy_info:
     This Ansible role allow people to enable the docker remapping feature:
     https://integratedcode.us/2015/10/13/user-namespaces-have-arrived-in-docker/
   license: MIT
-  min_ansible_version: 1.4
+  min_ansible_version: 1.8
   platforms:
     - name: Ubuntu
+      versions:
+        - trusty
   galaxy_tags:
     - docker
     - docker_remap

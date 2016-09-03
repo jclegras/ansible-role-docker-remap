@@ -6,7 +6,7 @@ This Ansible role allow people to enable the docker remapping feature: https://i
 Requirement
 ------------
 
-**Docker version 1.10** min installed on your system with an OS with user namespace enabled
+**Docker version 1.10** min installed on your system with an OS with user namespace enabled (3.10 Linux kernel)
 
 Role Variables
 --------------
@@ -100,12 +100,16 @@ Your mapping will be:
   
 **Rule:**
 
-*x in [0..dockremap_subordinate_file_length]*
+*offset in [0..dockremap_subordinate_file_length]*
       
-    User Host ID = User Host ID + x
-    User Container ID = User Host ID - dockremap_subordinate_file_numerical_subordinate_id
+    User Host ID = User Host ID + offset
+    User Container ID = offset
+    
+Caveat
+------
 
-  
+For Red Hat, you have to enable the user namespace first.
+http://goyalankit.com/blog/2016/06/25/user-namespace-in-red-hat-enterprise-linux-7-dot-2/
 
 License
 -------
